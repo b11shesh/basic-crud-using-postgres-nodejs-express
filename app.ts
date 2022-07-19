@@ -1,10 +1,10 @@
-const express = require('express');
-const app = express();
-const morgan = require('morgan');
+import express from 'express';
+import morgan from 'morgan';
 require('dotenv').config();
 
+const app = express();
 const port = process.env.PORT;
-const {Pool} = require('pg');
+import {Pool, PoolClient} from "pg";
 
 let pool = new Pool();
 
@@ -13,7 +13,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
-app.get('/', (req, res) =>{
+app.get('/', (req: express.Request, res: express.Response) =>{
     res.send(`<!DOCTYPE <!DOCTYPE html>
 
     <html>
@@ -50,9 +50,9 @@ app.get('/', (req, res) =>{
     </html>`);
 })
 
-app.get('/info/get', (req,res)=>{
+app.get('/info/get', (req: express.Request, res: express.Response)=>{
     try{
-        pool.connect(async(error, client, release)=>{
+        pool.connect(async(error: Error, client: PoolClient, release)=>{
             let resp = await client.query(`SELECT * FROM demo_table`);
             release();
             res.send(resp.rows);
@@ -62,10 +62,10 @@ app.get('/info/get', (req,res)=>{
         console.log(error);
     }
 });
-app.post('/info/add', (req,res)=>{
+app.post('/info/add', (req: express.Request,res: express.Response)=>{
    
     try{
-        pool.connect(async(error, client, release)=>{
+        pool.connect(async(error: Error, client: PoolClient, release)=>{
             let resp = await client.query(`INSERT INTO demo_table (name) VALUES ('${req.body.add}')`);
             
             res.redirect('/info/get');
@@ -75,10 +75,10 @@ app.post('/info/add', (req,res)=>{
         console.log(error);
     }
 });
-app.post('/info/delete', (req,res)=>{
+app.post('/info/delete', (req: express.Request ,res: express.Response)=>{
    
     try{
-        pool.connect(async(error, client, release)=>{
+        pool.connect(async(error : Error, client: PoolClient, release)=>{
             let resp = await client.query(`DELETE FROM demo_table WHERE name = '${req.body.delete}'`);
             
             res.redirect('/info/get');
@@ -89,10 +89,10 @@ app.post('/info/delete', (req,res)=>{
         console.log(error);
     }
 });
-app.post('/info/update', (req,res)=>{
+app.post('/info/update', (req: express.Request,res: express.Response)=>{
    
     try{
-        pool.connect(async(error, client, release)=>{
+        pool.connect(async(error: Error, client: PoolClient, release)=>{
             let resp = await client.query(`UPDATE demo_table set name = '${req.body.newValue}' WHERE name = '${req.body.oldValue}'`);
             
             res.redirect('/info/get');
