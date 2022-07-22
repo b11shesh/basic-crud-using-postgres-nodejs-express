@@ -2,11 +2,20 @@ import express from 'express';
 import morgan from 'morgan';
 require('dotenv').config();
 
+
 const app = express();
 const port = process.env.PORT;
 import {Pool, PoolClient} from "pg";
 
-let pool = new Pool();
+let pool = new Pool({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port : 5432,
+});
+
+
 
 app.use(morgan('dev'));
 //to parse the request
@@ -29,7 +38,7 @@ app.get('/', (req: express.Request, res: express.Response) =>{
             </form>
             <form action = "/info/add" method = "POST">
                 <label for="add">Name:</label>
-                <input type="text" name="add" id="add">
+                <input type="text" name="name" id="name">
                 <input type ="submit" value="ADD">
             </form>
             <form action = "/info/delete" method = "POST">
@@ -66,7 +75,7 @@ app.post('/info/add', (req: express.Request,res: express.Response)=>{
    
     try{
         pool.connect(async(error: Error, client: PoolClient, release)=>{
-            let resp = await client.query(`INSERT INTO demo_table (name) VALUES ('${req.body.add}')`);
+            let resp = await client.query(`INSERT INTO demo_table (name) VALUES ('${req.body.name}')`);
             
             res.redirect('/info/get');
         })
