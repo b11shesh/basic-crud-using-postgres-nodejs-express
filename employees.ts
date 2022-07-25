@@ -11,7 +11,7 @@ const Employees = sequelize.define(
     address: DataTypes.STRING,
     contact: DataTypes.STRING,
     dob: DataTypes.STRING,
-    department_id : DataTypes.INTEGER
+    departmentId : DataTypes.INTEGER
 },{
     timestamps: false
 });
