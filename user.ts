@@ -1,0 +1,28 @@
+import { DataTypes } from "sequelize";
+import sequelize from "./database";
+
+export interface IUser{
+    username: string;
+    id: number;
+    password:string;
+    email:string;
+}
+
+const user  = sequelize.define(
+    "user", {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true
+        },
+        username: DataTypes.STRING,
+        password: DataTypes.STRING,
+        email: DataTypes.STRING
+    },
+    {
+        modelName:'user',
+        tableName:'user',
+        timestamps:false
+    }
+);
+
+export default user;

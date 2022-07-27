@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
 
 const user = 'postgres'
 const host = 'localhost'

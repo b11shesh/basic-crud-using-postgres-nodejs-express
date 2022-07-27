@@ -1,9 +1,6 @@
-import Department from "./department";
-import Employees from "./employees";
+import department from "./department";
+import employees from "./employees";
 import express from 'express';
-import sequelize from "./database";
-import { stringify } from "querystring";
-
 
 const app = express();
 app.use(express.json());
@@ -11,9 +8,14 @@ app.use(express.json());
 export const getEmployees =async (req:express.Request, res:express.Response) => {
     
     try{
-        Department.hasMany(Employees);
-        const employees = await Employees.findAll();
-        res.send(employees);
+        employees.hasOne(department, {
+            foreignKey: 'id'
+        });
+        
+        const emp = await employees.findAll({
+            include: department
+        });
+        res.send(emp);
         
     }catch(err){
         console.log(err);

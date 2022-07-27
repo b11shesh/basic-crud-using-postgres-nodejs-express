@@ -1,17 +1,17 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import sequelize from "./database";
 
 
-const Department = sequelize.define(
+const department = sequelize.define(
     "department",{
     id : {
         type: DataTypes.INTEGER,
         primaryKey: true
     },
-    name: DataTypes.STRING
-    
-        
+    name: DataTypes.STRING    
 },
-{timestamps: false});
+{
+    tableName: 'department',
+    timestamps: false});
 
-export default Department;
+export default department;
