@@ -6,13 +6,15 @@ import * as bcrypt from "bcryptjs";
 let jwt = require("jsonwebtoken");
 
 export const signup = (req: express.Request, res: express.Response)=>{
-    console.log(req.body)
+    console.log(req.body);
     user.create({
         id: req.body.id,
         username: req.body.username,
         email: req.body.email,
-        password: bcrypt.hash(req.body.password, 8)
-
+        password: bcrypt.hashSync(req.body.password, 8)
+    })
+    .then(user =>{
+       return res.send({ message: "User was registered successfully!" });
     }).catch(err=>{
         return res.status(500).send({message: err.message});
     });

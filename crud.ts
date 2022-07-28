@@ -5,20 +5,103 @@ import express from 'express';
 const app = express();
 app.use(express.json());
 
-export const getEmployees =async (req:express.Request, res:express.Response) => {
+export const getEmployees = async (req:express.Request, res:express.Response) => {
+    employees.findAll()
+    .then(data =>{
+        res.send(data);
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Employees."
+        });
+      });
+   
+};
+export const getEmployeesById = async(req: express.Request, res: express.Response)=>{
+    const id = parseInt(req.params.id);
+    employees.hasOne(department, {
+        foreignKey: 'id'
+    })
+    employees.findByPk(id,{
+        include: department
+    })
     
-    try{
-        employees.hasOne(department, {
-            foreignKey: 'id'
-        });
+    .then(data =>{
         
-        const emp = await employees.findAll({
-            include: department
+        if (data){
+            res.send(data);
+        }else{
+            res.status(404).send({
+                message: "Error finding Employee with id="+ id
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving Employee with id=" + id
         });
-        res.send(emp);
-        
-    }catch(err){
-        console.log(err);
-    }
+    });
     
 };
+
+export const createEmployee = async (req: express.Request, res:express.Response)=>{
+        employees.create({
+            id: req.body.id,
+            name: req.body.name,
+            address: req.body.address,
+            contact: req.body.contact,
+            dob: req.body.dob,
+            departmentid: req.body.departmentid
+        })
+        .then(employees =>{
+            return res.send({ message: "Employee was created successfully!" });
+        }).catch(err=>{
+            return res.status(500).send({message: err.message});
+        });
+};
+
+export const deleteEmployee = async ( req: express.Request, res: express.Response)=>{
+    const id= parseInt(req.params.id);
+    employees.destroy({
+        where: {id:id}
+    }).then(num=>{
+        if (num == 1){
+            res.send({message: "Employee was deleted successfylly!"});
+        }
+        else{
+            res.send({
+                message: `Cannot delete employee with id= ${id}.`
+            });
+        }
+    }).catch(err =>{
+        res.status(500).send({message: "Could not delete the employee with id="+id});
+    });  
+};
+
+export const updateEmployee =async (req: express.Request, res: express.Response) => {
+    const id = parseInt(req.params.id);
+    
+    employees.update(req.body, {
+        where: { id: id }
+      })
+        .then(num => {
+            
+          if (num.includes(1)) {
+            res.send({
+              message: "Employee was updated successfully."
+            });
+          } else {
+            res.send({
+              message: `Cannot update Employee with id=${id}. Maybe Employee was not found or req.body is empty!`
+            });
+          }
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: "Error updating Employee with id=" + id
+          });
+        });
+    };
+
+
