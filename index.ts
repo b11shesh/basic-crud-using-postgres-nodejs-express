@@ -1,6 +1,6 @@
 import express from 'express';
-import sequelize from './database';
-import Router from './router';
+import sequelize from './dbConnection/database';
+import Router from './router/router';
 
 const app = express();
 app.use(express.json());

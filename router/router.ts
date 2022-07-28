@@ -1,8 +1,8 @@
 import express from "express";
-import { verifyToken } from "./auth";
-import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, updateEmployee} from "./crud";
-import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "./departmentcrud";
-import { signin, signup } from "./signin";
+import { verifyToken } from "../auth/auth";
+import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, updateEmployee} from "../crud/employeescrud";
+import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "../crud/departmentcrud";
+import { signin, signup } from "../crud/signin";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
-import sequelize from "./database";
-import user from "./user";
+import sequelize from "../dbConnection/database";
+import user from "../models/user";
 import express from 'express';
-import config from "./auth.config";
+import config from "../auth/auth.config";
 import * as bcrypt from "bcryptjs";
 let jwt = require("jsonwebtoken");
 

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import config from "./auth.config";
-import user from "./user";
+import user from "../models/user";
 import express from "express";
 
 

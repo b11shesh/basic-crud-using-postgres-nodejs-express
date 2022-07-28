@@ -1,4 +1,4 @@
-import department from "./department";
+import department from "../models/department";
 import express from 'express';
 
 const app = express();

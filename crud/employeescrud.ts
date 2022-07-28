@@ -1,5 +1,5 @@
-import department from "./department";
-import employees from "./employees";
+import department from "../models/department";
+import employees from "../models/employees";
 import express from 'express';
 
 const app = express();

@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "./database";
+import sequelize from "../dbConnection/database";
 
 export interface IUser{
     username: string;
