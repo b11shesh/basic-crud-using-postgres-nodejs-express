@@ -1,20 +1,56 @@
 import department from "../models/department";
 import express from 'express';
+import sequelize,{ Model } from "sequelize";
 
 const app = express();
 app.use(express.json());
 
+interface IDepartmentRows{
+    id: number
+    name: string
+}
+interface IDepartment{
+    count:number
+    rows: Model<IDepartmentRows, any>[]
+}
 
 export const getDepartment = async (req:express.Request, res:express.Response) =>{
-    department.findAll()
+    
+    const page:number = parseInt(req.query.pageNo as string);
+    const size:number = parseInt(req.query.pageSize as string);
+    const searchedName = req.query.search;
+    const {limit, offset} = getPagination(page,size);
+    const dep = await department.findAll();
+    department.findAndCountAll({
+        where: {
+            name: searchedName ? sequelize.where(sequelize.fn('Lower', sequelize.col('name')), "LIKE", "%" + searchedName + "%"): dep.map((item)=> item.getDataValue('name')) 
+        },
+        limit,
+        offset
+    })
     .then(data =>{
-        res.send(data);
+        console.log(data);
+        const response = getPagingData(data,page,limit);
+        res.send(response);
     })
     .catch(err =>{
         res.status(500).send({
             message: err.message || "Error occurred while retreiving data"
         });
     });
+};
+const getPagination = (page:number,size:number) => {
+    const limit =size? +(size??1): 1;
+    const offset = page ? page * limit :0 ;
+    return {limit, offset};
+};
+
+const getPagingData = (data:IDepartment,page: number,limit: number)=>{
+    const {count:totalItems, rows:department} = data;
+    const currentPage = page? +page :0;
+    const totalPages = Math.ceil(totalItems/limit);
+
+    return{ totalItems, department, totalPages, currentPage};
 };
 
 export const getDepartmentById =async (req:express.Request, res:express.Response) => {

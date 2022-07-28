@@ -1,14 +1,46 @@
 import department from "../models/department";
 import employees from "../models/employees";
+import sequelize,{Model} from 'sequelize'
 import express from 'express';
 
 const app = express();
 app.use(express.json());
 
+interface IEmployeeRows{
+    id :number
+    name:string
+    address: string
+    contact: string
+    dob: string
+    departmentid: number    
+}
+
+interface IEmployee{
+    count:number
+    rows:  Model<IEmployeeRows, any>[]
+}
+
 export const getEmployees = async (req:express.Request, res:express.Response) => {
-    employees.findAll()
+    
+
+    const page:number = parseInt(req.query.pageNo as string) ;
+    const size:number = parseInt(req.query.pageSize as string) ;
+    const searchedName = req.query.search  ;
+    const {limit, offset} = getPaginaton(page ,size);
+
+    const user = await employees.findAll();
+    employees.findAndCountAll({
+        where:{
+            name: searchedName ? sequelize.where(sequelize.fn('Lower', sequelize.col('name')), "LIKE", "%" + searchedName + "%"): user.map((item)=> item.getDataValue('name'))
+        },
+        limit,
+        offset        
+    })
     .then(data =>{
-        res.send(data);
+        console.log(data)
+        const response = getPagingData(data,page,limit);
+       
+        res.send(response);
     })
     .catch(err => {
         res.status(500).send({
@@ -18,6 +50,20 @@ export const getEmployees = async (req:express.Request, res:express.Response) =>
       });
    
 };
+const getPaginaton = (page:number,size:number) => {
+    const limit =size? +(size??1): 1;
+    const offset = page ? page * limit :0 ;
+    return {limit, offset};
+};
+
+const getPagingData = (data:IEmployee,page: number,limit: number)=>{
+    const {count:totalItems, rows:employees} = data;
+    const currentPage = page? +page :0;
+    const totalPages = Math.ceil(totalItems/limit);
+
+    return{ totalItems, employees, totalPages, currentPage};
+};
+
 export const getEmployeesById = async(req: express.Request, res: express.Response)=>{
     const id = parseInt(req.params.id);
     employees.hasOne(department, {
