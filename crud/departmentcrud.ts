@@ -1,18 +1,13 @@
 import department from "../models/department";
 import express from 'express';
+import { GenericType, getPagination, getPagingData } from "../commonHelper";
 import sequelize,{ Model } from "sequelize";
 
 const app = express();
 app.use(express.json());
 
-interface IDepartmentRows{
-    id: number
-    name: string
-}
-interface IDepartment{
-    count:number
-    rows: Model<IDepartmentRows, any>[]
-}
+
+
 
 export const getDepartment = async (req:express.Request, res:express.Response) =>{
     
@@ -39,19 +34,7 @@ export const getDepartment = async (req:express.Request, res:express.Response) =
         });
     });
 };
-const getPagination = (page:number,size:number) => {
-    const limit =size? +(size??1): 1;
-    const offset = page ? page * limit :0 ;
-    return {limit, offset};
-};
 
-const getPagingData = (data:IDepartment,page: number,limit: number)=>{
-    const {count:totalItems, rows:department} = data;
-    const currentPage = page? +page :0;
-    const totalPages = Math.ceil(totalItems/limit);
-
-    return{ totalItems, department, totalPages, currentPage};
-};
 
 export const getDepartmentById =async (req:express.Request, res:express.Response) => {
     const id = parseInt(req.params.id);
