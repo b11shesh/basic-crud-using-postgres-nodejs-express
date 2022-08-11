@@ -1,13 +1,16 @@
-import department from "../models/department";
 import employees from "../models/employees";
-import sequelize,{Model} from 'sequelize'
+import {Model, Sequelize, QueryTypes} from 'sequelize';
 import { GenericType, getPagination, getPagingData } from "../commonHelper";
 import express from 'express';
+import sequelize from "../dbConnection/database";
 
 const app = express();
 app.use(express.json());
 
-
+// export const getData = async (req:express.Request, res:express.Response)=>{
+//     sequelize.query('select * from get_employees()')
+//     .then(data)
+// }
 
 
 
@@ -19,19 +22,21 @@ export const getEmployees = async (req:express.Request, res:express.Response) =>
     const searchedName = req.query.search  ;
     const {limit, offset} = getPagination(page ,size);
 
-    const user = await employees.findAll();
-    employees.findAndCountAll({
-        where:{
-            name: searchedName ? sequelize.where(sequelize.fn('Lower', sequelize.col('name')), "LIKE", "%" + searchedName + "%"): user.map((item)=> item.getDataValue('name'))
-        },
-        limit,
-        offset        
-    })
-    .then(data =>{
+    // const user = await employees.findAll();
+    const emp = sequelize.query("SELECT * FROM get_employee()", {type: QueryTypes.SELECT})
+
+    // employees.findAndCountAll({
+    //     where:{
+    //         name: searchedName ? sequelize.where(sequelize.fn('Lower', sequelize.col('name')), "LIKE", "%" + searchedName + "%"): user.map((item)=> item.getDataValue('name'))
+    //     },
+    //     limit,
+    //     offset        
+    // })
+    .then(data=>{
         console.log(data)
-        const response = getPagingData(data,page,limit);
+        // const response = getPagingData(data,page,limit);
        
-        res.send(response);
+        res.send(data);
     })
     .catch(err => {
         res.status(500).send({
@@ -44,13 +49,14 @@ export const getEmployees = async (req:express.Request, res:express.Response) =>
 
 
 export const getEmployeesById = async(req: express.Request, res: express.Response)=>{
-    const id = parseInt(req.params.id);
-    employees.hasOne(department, {
-        foreignKey: 'id'
-    })
-    employees.findByPk(id,{
-        include: department
-    })
+    const empid = parseInt(req.params.id);
+    // employees.hasOne(department, {
+    //     foreignKey: 'id'
+    // })
+    // employees.findByPk(id,{
+    //     include: department
+    // })
+    const emp = sequelize.query("SELECT * FROM get_employee("+empid+")", {type: QueryTypes.SELECT})
     
     .then(data =>{
         
@@ -58,13 +64,13 @@ export const getEmployeesById = async(req: express.Request, res: express.Respons
             res.send(data);
         }else{
             res.status(404).send({
-                message: "Error finding Employee with id="+ id
+                message: "Error finding Employee with id="+ empid
             });
         }
     })
     .catch(err => {
         res.status(500).send({
-          message: "Error retrieving Employee with id=" + id
+          message: "Error retrieving Employee with id=" + empid
         });
     });
     
