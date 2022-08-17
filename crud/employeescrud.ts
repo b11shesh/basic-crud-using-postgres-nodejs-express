@@ -12,6 +12,12 @@ app.use(express.json());
 //     .then(data)
 // }
 
+interface IData{
+  id: number,
+  name: string,
+  supervisorid?: number,
+  supervisor: IData[]
+} 
 
 
 export const getEmployees = async (req:express.Request, res:express.Response) => {
@@ -134,5 +140,26 @@ export const updateEmployee =async (req: express.Request, res: express.Response)
           });
         });
     };
+    
+  export const subEmployees =async (req :express.Request , res: express.Response) => {
+    const id = parseInt(req.params.id);
 
+    sequelize.query(`WITH recursive emp as (
+      SELECT id, name, supervisorid
+      FROM employees where id = ${id}
+      union
+      SELECT e.id, e.name, e.supervisorid
+      FROM employees e inner join emp on e.id = emp.supervisorid
+  ) select * from emp  `, {type: QueryTypes.SELECT}).then((data: any[])=>{
+    console.log(data) 
+
+    let parent: IData[] =[]
+      for(let i = data.length-1; i>=0; i--){
+          parent = data.filter((item : IData) => item.id ==data[i].id)
+          parent.forEach((p:IData) => p.supervisor= data.filter((item: IData)=> item.id == p.supervisorid))
+      }
+    return res.status(200).send(parent)
+  })
+
+  };
 

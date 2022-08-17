@@ -1,7 +1,8 @@
 import department from "../models/department";
 import express from 'express';
 import { GenericType, getPagination, getPagingData } from "../commonHelper";
-import sequelize,{ Model } from "sequelize";
+import { Model } from "sequelize";
+import sequelize from "../dbConnection/database";
 
 const app = express();
 app.use(express.json());
@@ -97,14 +98,16 @@ export const updateDepartment =async (req: express.Request, res: express.Respons
         department.destroy({
             where: {id:id}
         }).then(num=>{
-            if (num == 1){
-                res.send({message: "Department was deleted successfylly!"});
-            }
-            else{
-                res.send({
-                    message: `Cannot delete department with id= ${id}.`
-                });
-            }
+            
+                if (num == 1){
+                    res.send({message: "Department was deleted successfylly!"});
+                }
+                else{
+                    res.status(424).send({
+                        message: `Cannot delete department because the Foreign Key Dependency Exists!!`
+                    });
+                }
+            
         }).catch(err =>{
             res.status(500).send({message: "Could not delete the department with id="+id});
         });  

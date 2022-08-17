@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../auth/auth";
-import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, updateEmployee} from "../crud/employeescrud";
+import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, subEmployees, updateEmployee} from "../crud/employeescrud";
 import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "../crud/departmentcrud";
 import { signin, signup } from "../crud/signin";
 
@@ -16,6 +16,7 @@ router.get('/departments/:id',verifyToken, getDepartmentById);
 router.post('/departments',verifyToken, createDepartment);
 router.put('/departments/:id',verifyToken, updateDepartment);
 router.delete('/departments/:id',verifyToken, deleteDepartment);
+router.get('/employees/:id/subEmployees',subEmployees);
 router.post('/signup', signup);
 router.post('/signin', signin);
 
