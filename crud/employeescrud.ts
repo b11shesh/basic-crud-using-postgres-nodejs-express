@@ -151,7 +151,7 @@ export const updateEmployee =async (req: express.Request, res: express.Response)
       SELECT e.id, e.name, e.supervisorid
       FROM employees e inner join emp on e.id = emp.supervisorid
   ) select * from emp  `, {type: QueryTypes.SELECT}).then((data: any[])=>{
-    console.log(data) 
+    
 
     let parent: IData[] =[]
       for(let i = data.length-1; i>=0; i--){
@@ -162,4 +162,3 @@ export const updateEmployee =async (req: express.Request, res: express.Response)
   })
 
   };
-

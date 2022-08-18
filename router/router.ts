@@ -16,7 +16,7 @@ router.get('/departments/:id',verifyToken, getDepartmentById);
 router.post('/departments',verifyToken, createDepartment);
 router.put('/departments/:id',verifyToken, updateDepartment);
 router.delete('/departments/:id',verifyToken, deleteDepartment);
-router.get('/employees/:id/subEmployees',subEmployees);
+router.get('/employees/:id/subEmployees',verifyToken,subEmployees);
 router.post('/signup', signup);
 router.post('/signin', signin);
 

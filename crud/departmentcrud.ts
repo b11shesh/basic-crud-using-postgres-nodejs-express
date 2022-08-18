@@ -25,7 +25,7 @@ export const getDepartment = async (req:express.Request, res:express.Response) =
         offset
     })
     .then(data =>{
-        console.log(data);
+        
         const response = getPagingData(data,page,limit);
         res.send(response);
     })
@@ -75,7 +75,7 @@ export const updateDepartment =async (req: express.Request, res: express.Respons
         where: { id: id }
       })
         .then(num => {
-            console.log(num)
+            
           if (num.includes(1)) {
             res.send({
               message: "Department was updated successfully."
