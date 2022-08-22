@@ -1,0 +1,12 @@
+create table userlogininfo (
+       userlogininfoid SERIAL PRIMARY KEY,
+	   userid INTEGER NOT NULL,
+	   jwttoken VARCHAR NOT NULL,
+	   guid uuid DEFAULT uuid_generate_v4 (),
+	   logindatetime DATE NOT NULL,
+	   logoutdatetime DATE
+);
+
+ALTER table userlogininfo 
+ ADD constraint fk_userlogininfo_user foreign key (userid) REFERENCES "user" (id);
+ 
