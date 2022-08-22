@@ -38,6 +38,9 @@ app.use('/api-docs', swaggerUI.serve,swaggerUI.setup(swaggerDocs));
 
 
 app.listen(4000, () => console.log('Server running at http://localhost:4000'));
+
+//Swagger of each and every API
+
 /**
  * @swagger
  * tags:

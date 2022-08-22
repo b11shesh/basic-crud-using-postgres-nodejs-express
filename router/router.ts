@@ -2,7 +2,7 @@ import express from "express";
 import { verifyToken } from "../auth/auth";
 import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, subEmployees, updateEmployee} from "../crud/employeescrud";
 import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "../crud/departmentcrud";
-import { signin, signup } from "../crud/signin";
+import { signin, signout, signup } from "../crud/signin";
 
 const router = express.Router();
 
@@ -19,5 +19,6 @@ router.delete('/departments/:id',verifyToken, deleteDepartment);
 router.get('/employees/:id/subEmployees',verifyToken,subEmployees);
 router.post('/signup', signup);
 router.post('/signin', signin);
+router.put('/signout/:id',verifyToken,signout);
 
 export default router;

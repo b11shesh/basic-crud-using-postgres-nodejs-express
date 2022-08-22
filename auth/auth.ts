@@ -14,6 +14,7 @@ export const verifyToken = async(req:express.Request, res: express.Response, nex
         });
     }
     const verifyToken = jwt.verify(token as string, config.secret);
+    
     if (verifyToken){
         next();
     }else{
