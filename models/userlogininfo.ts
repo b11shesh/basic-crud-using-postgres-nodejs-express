@@ -7,11 +7,15 @@ const userlogininfo  = sequelize.define(
     "userlogininfo", {
         userlogininfoid: {
             type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true
         },
         userid: DataTypes.INTEGER,
         jwttoken: DataTypes.STRING,
-        guid: DataTypes.UUID,
+        guid: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4
+        } ,
         logindatetime: DataTypes.DATE,
         logoutdatetime: DataTypes.DATE
     },

@@ -1,5 +1,5 @@
 import sequelize from "../dbConnection/database";
-import { Sequelize, QueryTypes } from 'sequelize';
+import { Sequelize, QueryTypes, UUIDV4, UUIDV1, UUID } from 'sequelize';
 import user from "../models/user";
 import express from 'express';
 import config from "../auth/auth.config";
@@ -50,12 +50,9 @@ export const signin = (req: express.Request, res: express.Response) =>{
         //   INSERT INTO userlogininfo(userlogininfoid, userid, jwttoken, guid, logindatetime, logoutdatetime ) VALUES (${Math.floor(Math.random() * 100)}, ${users.getDataValue('id')}, ${token}, ${crypto.randomUUID()}, ${new Date().toLocaleDateString()}, ${new Date().toLocaleDateString()} )`, {type: QueryTypes.INSERT})
 
         userlogininfo.create({
-            userlogininfoid: Math.floor(Math.random() * 100),
             userid: users.getDataValue('id'),
             jwttoken: token,
-            guid: crypto.randomUUID(),
-            logindatetime: new Date(),
-            // logoutdatetime: new Date(),            
+            logindatetime: new Date(),            
         }).then(item=> console.log(item))          
          
           return res.status(200).send({
