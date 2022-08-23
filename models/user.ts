@@ -16,7 +16,8 @@ const user  = sequelize.define(
         },
         username: DataTypes.STRING,
         password: DataTypes.STRING,
-        email: DataTypes.STRING
+        email: DataTypes.STRING,
+        userroleid: DataTypes.INTEGER
     },
     {
         modelName:'user',

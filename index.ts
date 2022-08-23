@@ -2,10 +2,13 @@ import express from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import Router from './router/router';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
-
+app.use(cors({
+    origin: 'http://localhost:4000'
+}));
 app.use(Router);
 const swaggerOptions={
     definition:{

@@ -1,0 +1,9 @@
+create table userrole(
+	userroleid serial PRIMARY KEY,
+	name varchar not null
+)
+
+
+alter table "user" add userroleid integer
+
+alter table "user" add constraint fk_userrole_user Foreign KEY (userroleid) references userrole (userroleid);
