@@ -1,0 +1,14 @@
+
+create or replace function get_user()
+
+	Returns Table (userid integer, username character, password character, email character, userroleid integer, userRole character varying )
+	language 'plpgsql'
+as $BODY$
+begin 
+return query
+	Select u.id, u.username, u.password, u.email, u.userroleid, r.name from "user" u join userrole r on r.userroleid = u.userroleid order by u.id asc;
+
+end;
+$BODY$
+
+select * from get_user()
