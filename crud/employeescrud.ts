@@ -4,15 +4,13 @@ import { addInErrorFile, addInLogFile, GenericType,  getPagination, getPagingDat
 import express from 'express';
 import sequelize from "../dbConnection/database";
 import { IDecoded } from "../commonHelper";
-import * as jwt from "jsonwebtoken"
+import * as jwt from "jsonwebtoken";
+
+
+
 
 const app = express();
 app.use(express.json());
-
-// export const getData = async (req:express.Request, res:express.Response)=>{
-//     sequelize.query('select * from get_employees()')
-//     .then(data)
-// }
 
 interface IData{
   id: number,
@@ -121,14 +119,15 @@ export const getEmployeesById = async(req: express.Request, res: express.Respons
     
 };
 
-export const createEmployee = async (req: express.Request, res:express.Response)=>{
-        employees.create({
+export const createEmployee =  async (req: express.Request, res:express.Response)=>{
+          employees.create({
             id: req.body.id,
             name: req.body.name,
             address: req.body.address,
             contact: req.body.contact,
             dob: req.body.dob,
-            departmentid: req.body.departmentid
+            departmentid: req.body.departmentid,
+            filepath: req.file?.path            
         })
         .then(employees =>{
             const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 

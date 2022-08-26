@@ -11,6 +11,7 @@ const employees = sequelize.define(
     address: DataTypes.STRING,
     contact: DataTypes.STRING,
     dob: DataTypes.STRING,
+    filepath: DataTypes.STRING,
     departmentid : {
        type: DataTypes.INTEGER,
        references:{

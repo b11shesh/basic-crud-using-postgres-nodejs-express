@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as express from "express";
 import config from "./auth/auth.config";
 import jwt from "jsonwebtoken";
+import multer from 'multer';
+import path from "path";
 
 
 export interface IDecoded{
@@ -66,7 +68,7 @@ export const addInLogFile =( data:string) =>{
     fs.appendFile(filename, data, (err)=>{
     if(err) console.log(err)
     console.log("recorded")
-  } )
+  });
 }
 
 export const addInErrorFile =( data:string) =>{
@@ -81,5 +83,29 @@ export const addInErrorFile =( data:string) =>{
     fs.appendFile(filename, data, (err)=>{
     if(err) console.log(err)
     console.log("recorded")
-  } )
+  });
 }
+
+
+
+export const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb){
+    cb(null,  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+ path.extname(file.originalname) )
+  }
+});
+
+export const upload = multer({storage: storage, limits: {
+  fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: (req, file, cb)=>{
+    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg'){
+      cb(null, true);
+    }else{
+      cb(null, false);
+      return cb(new Error("Only .jpg, .png, .jpeg format allowed!"));
+    }
+  }
+});

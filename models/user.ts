@@ -6,6 +6,7 @@ export interface IUser{
     id: number;
     password:string;
     email:string;
+    userroleid: number;
 }
 
 const user  = sequelize.define(
@@ -17,7 +18,8 @@ const user  = sequelize.define(
         username: DataTypes.STRING,
         password: DataTypes.STRING,
         email: DataTypes.STRING,
-        userroleid: DataTypes.INTEGER
+        userroleid: DataTypes.INTEGER,
+        useravatar: DataTypes.STRING
     },
     {
         modelName:'user',

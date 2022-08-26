@@ -4,10 +4,13 @@ import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, subEmpl
 import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "../crud/departmentcrud";
 import { signin, signout, signup } from "../crud/signin";
 import { getUserInfo } from "../crud/usercrud";
+import { upload } from "../commonHelper";
+
+
 const router = express.Router();
 
 router.get('/users',verifyToken, isAdmin, getUserInfo);
-router.post('/employees',verifyToken, isAdmin, createEmployee);
+router.post('/employees',upload.single('filepath'), verifyToken, isAdmin, createEmployee);
 router.get('/employees', verifyToken,  getEmployees);
 router.get('/employees/:id',verifyToken, getEmployeesById);
 router.delete('/employees/:id',verifyToken, isAdmin, deleteEmployee);
@@ -18,7 +21,7 @@ router.post('/departments',verifyToken, isAdmin, createDepartment);
 router.put('/departments/:id',verifyToken, isAdmin, updateDepartment);
 router.delete('/departments/:id',verifyToken, isAdmin, deleteDepartment);
 router.get('/employees/:id/subEmployees',verifyToken, subEmployees);
-router.post('/signup', signup);
+router.post('/signup', upload.single('useravatar'), signup);
 router.post('/signin', signin);
 router.put('/signout/:id',verifyToken, signout);
 

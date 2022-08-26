@@ -19,7 +19,8 @@ export const signup = async (req: express.Request, res: express.Response)=>{
         id: req.body.id,
         username: req.body.username,
         email: req.body.email,
-        password: await bcrypt.hashSync(req.body.password, 8)
+        password: await bcrypt.hashSync(req.body.password, 8),
+        useravatar: req.file?.path
     })
     .then(user =>{
       if(req.body.roles){
