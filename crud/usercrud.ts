@@ -4,6 +4,7 @@ import express from 'express';
 import sequelize from "../dbConnection/database";
 import { addInErrorFile, addInLogFile, IDecoded } from "../commonHelper";
 import * as jwt from "jsonwebtoken";
+import fs, { read } from "fs";
 
 
 const app = express();
@@ -34,3 +35,42 @@ export const getUserInfo =async (req:express.Request, res: express.Response) => 
     })
     
 }
+
+export const downloadImg = async (req:express.Request, res:express.Response) => {
+        const id = req.params.id;
+        user.findByPk(id)
+        .then(data=>{
+            var filename = "E:\\ITH (NODE.JS)\\crud\\" + (data?.getDataValue("useravatar") as string).trim();
+            
+            fs.readFile(filename, function(err,data){
+                if (!err){
+                    const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 
+
+                    const message = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}: ${req.method} ${req.path} ${(decodedToken as IDecoded)?.id} ${(decodedToken as IDecoded)?.username.trim()} \"Used Download Image API\" \n`
+
+                    addInLogFile(message);
+
+                    res.writeHead(200,{'Content-Type': 'image/jpeg'});
+                    res.end(data);
+                } else{
+                    const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 
+
+                    const message = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}: ${req.method} ${req.path} ${(decodedToken as IDecoded)?.id} ${(decodedToken as IDecoded)?.username.trim()} \"${err.message}\" \n`
+
+                    addInErrorFile(message);
+                    throw err
+                };
+                
+            });
+            
+        });    
+}
+
+
+
+
+
+
+
+
+            

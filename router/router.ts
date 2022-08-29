@@ -3,7 +3,7 @@ import { verifyToken , isAdmin} from "../auth/auth";
 import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, subEmployees, updateEmployee} from "../crud/employeescrud";
 import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "../crud/departmentcrud";
 import { signin, signout, signup } from "../crud/signin";
-import { getUserInfo } from "../crud/usercrud";
+import { downloadImg, getUserInfo } from "../crud/usercrud";
 import { upload } from "../commonHelper";
 
 
@@ -24,5 +24,6 @@ router.get('/employees/:id/subEmployees',verifyToken, subEmployees);
 router.post('/signup', upload.single('useravatar'), signup);
 router.post('/signin', signin);
 router.put('/signout/:id',verifyToken, signout);
+router.get('/downloadimage/:id',verifyToken,isAdmin, downloadImg);
 
 export default router;
