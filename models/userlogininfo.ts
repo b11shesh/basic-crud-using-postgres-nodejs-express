@@ -17,7 +17,8 @@ const userlogininfo  = sequelize.define(
             defaultValue: DataTypes.UUIDV4
         } ,
         logindatetime: DataTypes.DATE,
-        logoutdatetime: DataTypes.DATE
+        logoutdatetime: DataTypes.DATE,
+        userroleid: DataTypes.INTEGER
     },
     {
         modelName:'userlogininfo',

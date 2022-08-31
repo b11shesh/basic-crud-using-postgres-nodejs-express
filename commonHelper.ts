@@ -67,7 +67,7 @@ export const addInLogFile =( data:string) =>{
   const filename =`/ITH (NODE.JS)/crud/log/logfile_${date.join("")}.txt`
     fs.appendFile(filename, data, (err)=>{
     if(err) console.log(err)
-    console.log("recorded")
+    
   });
 }
 
@@ -82,7 +82,7 @@ export const addInErrorFile =( data:string) =>{
   const filename =`/ITH (NODE.JS)/crud/log/errorfile_${date.join("")}.txt`
     fs.appendFile(filename, data, (err)=>{
     if(err) console.log(err)
-    console.log("recorded")
+    
   });
 }
 

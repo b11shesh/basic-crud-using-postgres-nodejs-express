@@ -5,6 +5,8 @@ import sequelize from "../dbConnection/database";
 import { addInErrorFile, addInLogFile, IDecoded } from "../commonHelper";
 import * as jwt from "jsonwebtoken";
 import fs, { read } from "fs";
+import userlogininfo from "../models/userlogininfo";
+import { QueryTypes } from "sequelize";
 
 
 const app = express();
@@ -66,6 +68,26 @@ export const downloadImg = async (req:express.Request, res:express.Response) => 
         });    
 }
 
+
+export const getUserLoginInfo = async (req: express.Request, res: express.Response)=>{
+    const users = await sequelize.query(`select distinct userid, max(logindatetime) as logindate, max(logoutdatetime) as logoutdate, "user".username from userlogininfo join "user" 
+    on userlogininfo.userid = "user".id 
+    group by userid, "user".username`, {type: QueryTypes.SELECT })
+    .then(data=>{
+        return res.status(200).send(data);
+    }).catch(err=>{
+        return res.status(500).send({message: err.message});
+    })
+
+    
+
+
+
+
+
+
+    
+}
 
 
 

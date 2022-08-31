@@ -1,5 +1,5 @@
 import sequelize from "../dbConnection/database";
-import { Op, QueryTypes } from 'sequelize';
+import { Op, QueryTypes, UUIDV1 } from 'sequelize';
 import user from "../models/user";
 import express from 'express';
 import config from "../auth/auth.config";
@@ -9,6 +9,7 @@ import userlogininfo from "../models/userlogininfo";
 import userrole from "../models/userrole";
 import * as fs from 'fs';
 import { addInLogFile } from "../commonHelper";
+import crypto from "crypto";
 
 
 export const signup = async (req: express.Request, res: express.Response)=>{
@@ -49,7 +50,6 @@ export const signin = async (req: express.Request, res: express.Response) =>{
               if (!user){
                   return res.status(404).send({message: "Invalid User Name."});
               }
-              
                 let passwordIsValid = await bcrypt.compare(
                     req.body.password,
                     user.getDataValue('password').trim()
@@ -61,13 +61,15 @@ export const signin = async (req: express.Request, res: express.Response) =>{
                       message: "Invalid Password!"
                     });
                 }else{
-
-                  var token = jwt.sign({ id: user?.getDataValue('id'), role: user?.getDataValue("userroleid"), username: user?.getDataValue("username") }, config.secret, {
-                    expiresIn: 86400 // 24 hours
-                  });
+                  var token = crypto.randomUUID();
+                  console.log(token);
+                  // var token = jwt.sign({ id: user?.getDataValue('id'), role: user?.getDataValue("userroleid"), username: user?.getDataValue("username") }, config.secret, {
+                  //   expiresIn: 86400 // 24 hours
+                  // });
                   userlogininfo.create({
                     userid: user.getDataValue('id'),
                     jwttoken: token,
+                    userroleid: user.getDataValue('userroleid'),
                     logindatetime: new Date(),            
                 }).then(item=> console.log(item))         
                 

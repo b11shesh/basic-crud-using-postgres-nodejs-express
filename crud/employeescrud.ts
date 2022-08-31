@@ -5,6 +5,7 @@ import express from 'express';
 import sequelize from "../dbConnection/database";
 import { IDecoded } from "../commonHelper";
 import * as jwt from "jsonwebtoken";
+import multer from "multer";
 
 
 
@@ -58,7 +59,7 @@ export const getEmployees = async (req:express.Request, res:express.Response) =>
        
     })
     .catch(err => {
-          const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 
+            const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 
 
             const message = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}: ${req.method} ${req.path} ${(decodedToken as IDecoded)?.id} ${(decodedToken as IDecoded)?.username.trim()} \"${err.message}\" \n`
 
@@ -80,7 +81,7 @@ export const getEmployeesById = async(req: express.Request, res: express.Respons
     // employees.findByPk(id,{
     //     include: department
     // })
-    const emp = sequelize.query("SELECT * FROM get_employee("+empid+")", {type: QueryTypes.SELECT})
+    sequelize.query("SELECT * FROM get_employee("+empid+")", {type: QueryTypes.SELECT})
     
     .then(data =>{
       const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 
@@ -130,6 +131,7 @@ export const createEmployee =  async (req: express.Request, res:express.Response
             filepath: req.file?.path            
         })
         .then(employees =>{
+          
             const decodedToken = jwt.decode(req.headers.authorization?.split(" ")[1] as string); 
 
             const message = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}: ${req.method} ${req.path} ${(decodedToken as IDecoded)?.id} ${(decodedToken as IDecoded)?.username.trim()} \"Used Create Employee API\" \n`
