@@ -42,7 +42,7 @@ export const downloadImg = async (req:express.Request, res:express.Response) => 
         const id = req.params.id;
         user.findByPk(id)
         .then(data=>{
-            var filename = "E:\\ITH (NODE.JS)\\crud\\" + (data?.getDataValue("useravatar") as string).trim();
+            var filename = "D:\\ITH (NODE.JS)\\CRUD\\" + (data?.getDataValue("useravatar") as string).trim();
             
             fs.readFile(filename, function(err,data){
                 if (!err){
