@@ -2,11 +2,12 @@ import user from "../models/user";
 import userrole from "../models/userrole";
 import express from 'express';
 import sequelize from "../dbConnection/database";
-import { addInErrorFile, addInLogFile, IDecoded } from "../commonHelper";
+import { addInErrorFile, addInLogFile, getPagination} from "../commonHelper";
 import * as jwt from "jsonwebtoken";
 import fs, { read } from "fs";
 import userlogininfo from "../models/userlogininfo";
-import { QueryTypes } from "sequelize";
+import { QueryTypes, Sequelize } from "sequelize";
+import { IDecoded } from "../commonHelper";
 
 
 const app = express();
@@ -42,7 +43,7 @@ export const downloadImg = async (req:express.Request, res:express.Response) => 
         const id = req.params.id;
         user.findByPk(id)
         .then(data=>{
-            var filename = "E:\\ITH (NODE.JS)\\crud\\" + (data?.getDataValue("useravatar") as string).trim();
+            var filename = "D:\\ITH (NODE.JS)\\CRUD\\" + (data?.getDataValue("useravatar") as string).trim();
             
             fs.readFile(filename, function(err,data){
                 if (!err){
