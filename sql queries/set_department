@@ -1,0 +1,42 @@
+-- FUNCTION: public.upsert_employeedepartments(integer, character varying)
+
+-- DROP FUNCTION IF EXISTS public.upsert_employeedepartments(integer, character varying);
+
+CREATE OR REPLACE FUNCTION public.upsert_employeedepartments(
+	employeeid integer,
+	deptids character varying)
+    RETURNS TABLE (empperdepid INTEGER, empid INTEGER, depid INTEGER)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+
+BEGIN
+--create temp table
+CREATE TEMP TABLE deptids_temp(
+	depid INTEGER
+);
+
+--insert in temp table 
+insert into deptids_temp select CAST(regexp_split_to_table(trim(deptids), E'\,\\s?') AS Integer) as depid;
+
+-- insert if not exists in  employeesperdep but exists in deptids_temp
+insert into employeesperdep (empid, depid) 
+(select employeeid as empid, d.depId from deptids_temp d where not exists 
+ (select  i.depId from employeesperdep i where i.empid = employeeid AND i.depId = d.depId)
+);
+
+-- delete if not exists in deptids_temp but exists in employeesperdep
+delete from employeesperdep i where i.empid = employeeid and i.depid in 
+(select d.depId from employeesperdep d where not exists 
+ (select i.depId from deptids_temp i where i.depId = d.depId )
+);
+
+DROP table deptids_temp;
+
+RETURN QUERY select * from employeesperdep i WHERE i.empid = employeeid;
+
+END;
+$BODY$;
+
+
+ALTER FUNCTION public.upsert_employeedepartments(integer, character varying)
+    OWNER TO postgres;

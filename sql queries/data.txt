@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION set_department(employeeid integer, deptids)
+AS $BODY$
+
+BEGIN
+	IF employeesperdep.depid IS NULL THEN
+	DELETE FROM public.employeesperdep WHERE employeesperdep.empid = employeeid;
+	END IF; 
+	IF employeesperdep.depid = deptsid THEN
+	RAISE NOTICE 'Department Already Exists';
+	END IF;
+	IF employeesperdep.empid != employeeid THEN
+	RAISE NOTICE 'Employee is not found';
+	END IF;
+	IF employeesperdep.empid = employeeid AND employeesperdep.depid != deptsid THEN 
+	UPDATE public.employeesperdep SET employeesperdep.depid = deptids;
+	END IF;
+END;
+$BODY$;

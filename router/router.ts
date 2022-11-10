@@ -1,10 +1,11 @@
 import express from "express";
 import { verifyToken , isAdmin} from "../auth/auth";
-import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, subEmployees, updateEmployee} from "../crud/employeescrud";
+import { createEmployee, deleteEmployee, getEmployees, getEmployeesById, subEmployees, updateEmployee, upsertDep} from "../crud/employeescrud";
 import { createDepartment, deleteDepartment, getDepartment, getDepartmentById, updateDepartment } from "../crud/departmentcrud";
 import { signin, signout, signup } from "../crud/signin";
 import { downloadImg, getUserInfo, getUserLoginInfo } from "../crud/usercrud";
 import { upload } from "../commonHelper";
+import { runInContext } from "vm";
 
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.post('/signin', signin);
 router.put('/signout/:id',verifyToken, signout);
 router.get('/downloadimage/:id',verifyToken,isAdmin, downloadImg);
 router.get('/getUserLoginInfo', getUserLoginInfo);
+router.get('/upsertDepartment',upsertDep);
 
 export default router;

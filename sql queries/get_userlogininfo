@@ -1,0 +1,54 @@
+-- FUNCTION: public.get_userlogininfo(character, integer, integer, date, date)
+
+-- DROP FUNCTION IF EXISTS public.get_userlogininfo(character, integer, integer, date, date);
+
+CREATE OR REPLACE FUNCTION public.get_userlogininfo(
+	search character,
+	pagenumber integer,
+	pagesize integer,
+	datetimefrom date,
+	datetimeto date)
+    RETURNS TABLE(userid integer, username character, logindate date, logoutdate date) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+	Declare 
+		PageOffset INTEGER := 0;
+		l_query TEXT;
+BEGIN 
+PageOffset := ((pagenumber-1)*pagesize);
+search := '%' || search || '%';
+raise notice 'search: %', search;
+
+
+	IF search = '' THEN
+		l_query := 'SELECT DISTINCT userlogininfo.userid, "user".username, max(userlogininfo.logindatetime) as logindate, max(userlogininfo.logoutdatetime) as logoutdate FROM userlogininfo JOIN "user" 
+			ON userlogininfo.userid = "user".id
+			GROUP BY userlogininfo.userid, "user".username';
+			raise notice 'empty search: %', l_query;
+		ELSIF search != '' THEN
+			l_query := 'SELECT DISTINCT userlogininfo.userid, "user".username, max(userlogininfo.logindatetime) as logindate, max(userlogininfo.logoutdatetime) as logoutdate FROM userlogininfo JOIN "user" 
+				ON userlogininfo.userid = "user".id
+				WHERE "user".username ILIKE $1 GROUP BY userlogininfo.userid, "user".username';
+				raise notice 'not empty search: %', l_query;
+		END IF;
+		IF datetimefrom IS NOT NULL AND datetimeto IS NOT NULL THEN
+				l_query := l_query ||' HAVING '|| 'max(userlogininfo.logindatetime) BETWEEN '''|| datetimefrom::DATE ||''' AND '''|| datetimeto::DATE ||''' LIMIT ' || pagesize || ' OFFSET ' || PageOffset ;
+				raise notice 'fulldatetime: %', l_query;
+		ELSIF datetimeto IS NULL AND datetimefrom IS NOT NULL THEN 
+			l_query := l_query || ' HAVING '|| ' max(userlogininfo.logindatetime) > ''' || datetimefrom::DATE || ''' LIMIT ' || pagesize || ' OFFSET ' || PageOffset ;
+			raise notice 'datetimeto null: %', l_query;
+		ELSIF datetimefrom IS NULL AND datetimeto IS NOT NULL THEN
+			l_query := l_query || ' HAVING '|| ' max(userlogininfo.logindatetime) < ''' || datetimeto::DATE || ''' LIMIT '|| pagesize || ' OFFSET ' || PageOffset ;
+			raise notice 'datetimefrom null: %', l_query;
+	END IF;
+	RETURN query execute l_query using search;
+END;
+$BODY$;
+
+ALTER FUNCTION public.get_userlogininfo(character, integer, integer, date, date)
+    OWNER TO postgres;
+

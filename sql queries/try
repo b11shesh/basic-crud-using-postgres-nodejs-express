@@ -1,0 +1,27 @@
+create or replace function get_userlogininfo(
+	search character,
+	PageNumber integer,
+	PageSize integer,
+	datetimefrom date,
+	datetimeto date)
+	RETURNS TABLE(userid integer, username character, logindate date, logoutdate date) 
+    LANGUAGE 'plpgsql'
+	
+AS $BODY$
+	Declare 
+		PageOffset INTEGER := 0;
+		l_query = text;
+BEGIN 
+	PageOffset := ((PageNumber-1)*PageSize);
+	v_query := 'SELECT DISTINCT userlogininfo.userid, "user".username, max(userlogininfo.logindatetime) as logindate, max(userlogininfo.logoutdatetime) as logoutdate FROM userlogininfo JOIN "user" 
+    	ON userlogininfo.userid = "user".id
+    	GROUP BY userlogininfo.userid, "user".username';
+	IF search != '' THEN
+	l_query := 'SELECT DISTINCT userlogininfo.userid, "user".username, max(userlogininfo.logindatetime) as logindate, max(userlogininfo.logoutdatetime) as logoutdate FROM userlogininfo JOIN "user" 
+    	ON userlogininfo.userid = "user".id
+		WHERE "user".username ILIKE '||'%'search'%'||
+    	'GROUP BY userlogininfo.userid, "user".username';
+	END IF;
+	
+END;
+$BODY$

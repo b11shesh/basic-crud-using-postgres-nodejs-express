@@ -252,3 +252,14 @@ export const updateEmployee =async (req: express.Request, res: express.Response)
     });
 
 };
+
+export const upsertDep =async (req:express.Request, res: express.Response) => {
+  const employeeid:number = parseInt(req.query.employeeid as string);
+  const deptids = req.query.deptids as string;
+  sequelize.query("SELECT * FROM upsert_employeedepartments("+employeeid+","+deptids+")", {type: QueryTypes.SELECT})
+  .then(data=>{
+    return res.status(200).send(data);
+}).catch(err=>{
+    return res.status(500).send({message: err.message});
+});
+};
